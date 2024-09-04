@@ -12,16 +12,26 @@ func gestionErreur(err error) {
 	}
 }
 
+type Client struct {
+	conn   net.Conn
+	pseudo string
+}
+
+type Identification struct {
+	Name []string
+	Id   []interface{}
+}
+
 const (
 	IP   = "localhost"
-	PORT = "8080"
+	PORT = "8081"
 )
 
 func read(conn net.Conn) {
 	message, err := bufio.NewReader(conn).ReadString('\n')
 	gestionErreur(err)
 
-	fmt.Print("Client:", string(message))
+	fmt.Print("Client: ", string(message))
 
 }
 
@@ -50,40 +60,49 @@ func main() {
 	gestionErreur(err)
 
 	var clients []net.Conn // tableau de clients
-	// var mystring [10]string
+	var tab Identification
 
 	for {
 		conn, err := ln.Accept()
-		// fmt.Println("LOCAL: ", conn.LocalAddr())
-		// fmt.Println("REMOTE: ", conn.RemoteAddr())
 		if err == nil {
 			clients = append(clients, conn) //quand un client se connecte on le rajoute à notre tableau
+			tab.Id = append(tab.Id, conn.RemoteAddr())
+			// id.Id = tab
 		}
+		buf := bufio.NewReader(conn)
+		conn.Write([]byte("Enter your name: "))
+		name, err := buf.ReadString('\n')
+		if tab.User(name) {
+			fmt.Println(tab.User(name))
+			tab.Name = append(tab.Name, name[:len(name)-1])
+		} else {
+			buf := bufio.NewReader(conn)
+			conn.Write([]byte("Enter your name: "))
+			name, _ := buf.ReadString('\n')
+			fmt.Println(name)
+		}
+		fmt.Println(tab)
+		// fmt.Println(tab.User(name))
+		// conn.Write([]byte(tab.Name))
+		// conn.Write([]byte(" has joined the chat."))
+
 		gestionErreur(err)
-		fmt.Println("Un client est connecté depuis", conn.RemoteAddr())
-		fmt.Println("CLIENTS: ", clients)
+		// fmt.Println(tab)
+		// fmt.Println("Un client est connecté depuis", conn.RemoteAddr())
+		// fmt.Println("CLIENTS: ", clients)
+
 		go func() { // création de notre goroutine quand un client est connecté
-			// fmt.Print("Enter: ")
-			// fmt.Scan(&mystring[0])
 			// fmt.Println("Hello", mystring[0])
 			buf := bufio.NewReader(conn)
-
 			for {
-				name, err := buf.ReadString('\n')
-
-				if err != nil {
-					fmt.Printf("Client disconnected.\n")
-					break
-				}
-				for _, c := range clients {
-					fmt.Println("C LOCAL: ", c.RemoteAddr())
-					// fmt.Println("C LOCAL: ", c.Read())
-					// fmt.Scan(&mystring[i])
-					// fmt.Printf("Welcome, %v [%v]", i, mystring[i])
-					// fmt.Print("BYTE: name: %v msg: %v", name, []byte(name))
-					fmt.Println("NAME: ", name)
-
-					c.Write([]byte(name)) // on envoie un message à chaque client
+				for i, c := range clients {
+					message, err := buf.ReadString('\n')
+					if err != nil {
+						fmt.Printf("Client disconnected.\n")
+						break
+					}
+					c.Write([]byte("[" + tab.Name[i] + "]: "))
+					c.Write([]byte(message)) // on envoie un message à chaque client
 				}
 			}
 		}()
@@ -101,6 +120,7 @@ func handleConnection(conn net.Conn) {
 	_, err := conn.Read(buf)
 	// _, err2 := conn.Write(buf)
 	// fmt.Println(test)
+
 	fmt.Println("LOCAL: ", conn.LocalAddr())
 	fmt.Println("REMOTE: ", conn.RemoteAddr())
 	fmt.Println(buf)
@@ -112,4 +132,18 @@ func handleConnection(conn net.Conn) {
 	// Print the incoming data
 	// fmt.Printf("Received: %s", buf)
 	conn.Write([]byte(buf))
+}
+
+func (tab *Identification) User() {
+	buf := bufio.NewReader(conn)
+	conn.Write([]byte("Enter your name: "))
+	name, _ := buf.ReadString('\n')
+	for _, pseudo := range tab.Name {
+		if pseudo == name {
+			tab.User()
+		}
+	}
+	// conn.Write([]byte("Enter your name: "))
+	// name, err := buf.ReadString('\n')
+	tab.Name = append(tab.Name, name[:len(name)-1])
 }
