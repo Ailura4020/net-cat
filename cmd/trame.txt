@@ -1,0 +1,3 @@
+trame 
+
+check si y a un doublon de nom entrer dans le serveur 
