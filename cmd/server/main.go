@@ -7,6 +7,10 @@ import (
 	"os"
 )
 
+type Server struct {
+	clients []Client
+}
+
 type Client struct {
 	conn   net.Conn
 	Pseudo string
@@ -23,6 +27,12 @@ const (
 	PORT = "8081"
 )
 
+func main() {
+	server := Server{
+	}
+	server.Run()
+}
+
 func gestionErreur(err error) {
 	if err != nil {
 		panic(err)
@@ -35,7 +45,7 @@ func read(conn net.Conn) {
 	fmt.Print("Client: ", string(message))
 }
 
-func main() {
+func (server *Server) Run() {
 	//Message au lancement
 	fmt.Println("Lancement du serveur...")
 
@@ -84,32 +94,28 @@ func main() {
 			Pseudo: name[:len(name)-1],
 			Messages: messages,
 		}
+		server.clients = append(server.clients, client)
 		// clients.pseudo = append(clients.Pseudo, name[:len(name)-1])
 
 		// création de notre goroutine quand un client est connecté
-		go client.HandleConnection(client)
-		fmt.Println("test3")
+		go server.HandleConnection(client)
 	}
 }
 
-func (clients *Client) HandleConnection(client Client) {
+func (server *Server) HandleConnection(client Client) {
 	// Close the connection when we're done
 	// defer client.conn.Close()
-	fmt.Println("test1")
 	buf := bufio.NewReader(client.conn)
 	for {
 		message, err := buf.ReadString('\n')
 		if err != nil {
-			fmt.Println("test2")
 			fmt.Printf("Client disconnected.\n")
 			break
 		}
-		// client.Messages = append(client.Messages, message)
-		fmt.Println("test5")
+		client.Messages = append(client.Messages, message)
 		client.conn.Write([]byte("[" + string(client.Pseudo) + "]: "))
-		fmt.Println("test6")
 		client.conn.Write([]byte(message)) // on envoie un message à chaque client
-		fmt.Println("test4")
+		server.Broadcast(client, message)
 	}
 	// conn.Write([]byte(buf))
 }
@@ -124,4 +130,13 @@ func (clients *Client) User(conn net.Conn) string {
 		}
 	}
 	return name
+}
+
+func (server *Server) Broadcast(client Client, message string) {
+	fmt.Println("Pseudo: ", client.Pseudo)
+	for _, name := range server.clients {
+		name.conn.Write([]byte("[" + string(name.Pseudo) + "]: "))
+		name.conn.Write([]byte(message))
+		fmt.Println(name)
+	}
 }
