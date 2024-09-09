@@ -109,7 +109,7 @@ func (clients *Client) User(conn net.Conn) string {
 	buf := bufio.NewReader(conn)
 	name, _ := buf.ReadString('\n')
 	for _, pseudo := range clients.Pseudo {
-		if string(pseudo) == name[:len(name)-1] {
+		if string(pseudo) == name[:len(name)-1] || len(name) == 1 {
 			conn.Write([]byte("Enter a new name: "))
 			clients.User(conn)
 		}
