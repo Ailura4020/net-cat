@@ -78,35 +78,44 @@ func main() {
 		name := client.User(conn)
 		
 		//Ajout du nom au tableau de noms
+		messages := []string{}
 		client = Client{
+			conn: conn,
 			Pseudo: name[:len(name)-1],
+			Messages: messages,
 		}
 		// clients.pseudo = append(clients.Pseudo, name[:len(name)-1])
 
 		// création de notre goroutine quand un client est connecté
-		go client.HandleConnection(client.conn)
+		go client.HandleConnection(client)
+		fmt.Println("test3")
 	}
 }
 
-func (clients *Client) HandleConnection(conn net.Conn) {
+func (clients *Client) HandleConnection(client Client) {
 	// Close the connection when we're done
-	defer conn.Close()
-	buf := bufio.NewReader(conn)
+	// defer client.conn.Close()
+	fmt.Println("test1")
+	buf := bufio.NewReader(client.conn)
 	for {
 		message, err := buf.ReadString('\n')
 		if err != nil {
+			fmt.Println("test2")
 			fmt.Printf("Client disconnected.\n")
 			break
 		}
-		clients.Messages = append(clients.Messages, message)
-		clients.conn.Write([]byte("[" + string(clients.Pseudo) + "]: "))
-		clients.conn.Write([]byte(message)) // on envoie un message à chaque client
+		// client.Messages = append(client.Messages, message)
+		fmt.Println("test5")
+		client.conn.Write([]byte("[" + string(client.Pseudo) + "]: "))
+		fmt.Println("test6")
+		client.conn.Write([]byte(message)) // on envoie un message à chaque client
+		fmt.Println("test4")
 	}
 	// conn.Write([]byte(buf))
 }
 
 func (clients *Client) User(conn net.Conn) string {
-	buf := bufio.NewReader(conn)
+	buf := bufio.NewReader(clients.conn)
 	name, _ := buf.ReadString('\n')
 	for _, pseudo := range clients.Pseudo {
 		if string(pseudo) == name[:len(name)-1] || len(name) == 1 {
