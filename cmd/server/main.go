@@ -4,6 +4,23 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"os"
+)
+
+type Client struct {
+	conn   net.Conn
+	Pseudo string
+	Messages []string
+}
+
+type Identification struct {
+	Name []string
+	Id   []interface{}			
+}
+
+const (
+	IP   = "localhost"
+	PORT = "8081"
 )
 
 func gestionErreur(err error) {
@@ -12,39 +29,30 @@ func gestionErreur(err error) {
 	}
 }
 
-type Client struct {
-	conn   net.Conn
-	pseudo string
-}
-
-type Identification struct {
-	Name []string
-	Id   []interface{}
-}
-
-const (
-	IP   = "localhost"
-	PORT = "8081"
-)
-
 func read(conn net.Conn) {
 	message, err := bufio.NewReader(conn).ReadString('\n')
 	gestionErreur(err)
-
 	fmt.Print("Client: ", string(message))
-
 }
 
 func main() {
-	fmt.Println("Lancement du serveur ...")
+	//Message au lancement
+	fmt.Println("Lancement du serveur...")
+
+	//On defini le port du server
+	if len(os.Args) != 2 {
+		fmt.Println("Wrong number of arguments, usage: go run . [port number]")
+		return
+	}
+	port := os.Args[1]
 
 	//Création d'une connection au port et à l'Ip donnée
-	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", IP, PORT))
+	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", IP, port))
 	gestionErreur(err)
 	
 	//Déclaration des structures
-	var clients []net.Conn // tableau de clients
-	var tab Identification
+	// var clients []net.Conn // tableau de clients
+	// var tab Identification
 	
 	for {
 		//Autorisation d'une nouvelle connection
@@ -54,76 +62,56 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		
+		client := Client{
+			conn: conn,
+		}
 		// clients = append(clients, conn) //quand un client se connecte on le rajoute à notre tableau
 		//Ajout de l'adresse IP dans notre structure
-		tab.Id = append(tab.Id, conn.RemoteAddr())
+		// tab.Id = append(tab.Id, conn.RemoteAddr())
+		fmt.Println("Remote Addr: ", conn.RemoteAddr())
 		
 		//Demande du nom
-		conn.Write([]byte("Welcome\n"))
-		conn.Write([]byte("Enter your name: "))
+		client.conn.Write([]byte("Welcome\n"))
+		client.conn.Write([]byte("Enter your name: "))
 
 		//Vérification si le nom choisi est déjà pris
-		name := tab.User(conn)
+		name := client.User(conn)
+		
 		//Ajout du nom au tableau de noms
-		tab.Name = append(tab.Name, name[:len(name)-1])
-
-		// gestionErreur(err)
-		// fmt.Println("Un client est connecté depuis", conn.RemoteAddr())
-		// fmt.Println("CLIENTS: ", clients)
+		client = Client{
+			Pseudo: name[:len(name)-1],
+		}
+		// clients.pseudo = append(clients.Pseudo, name[:len(name)-1])
 
 		// création de notre goroutine quand un client est connecté
-		fmt.Println("Netconn: ", clients)
-		go func() { 
-			// buf := bufio.NewReader(conn)
-			for {
-				// for _, c := range clients {
-				// 	message, err := buf.ReadString('\n')
-				// 	if err != nil {
-				// 		fmt.Printf("Client disconnected.\n")
-				// 		break
-				// 	}
-				// 	fmt.Println(c)
-				// 	c.Write([]byte("[" + c + "]: "))
-				// 	c.Write([]byte(message)) // on envoie un message à chaque client
-				// }
-			}
-		}()
+		go client.HandleConnection(client.conn)
 	}
 }
 
-func handleConnection(conn net.Conn) {
+func (clients *Client) HandleConnection(conn net.Conn) {
 	// Close the connection when we're done
 	defer conn.Close()
-
-	// Read incoming data
-	buf := make([]byte, 1024)
-	// buf := make([]byte, 4096)
-	// bufw := make([]byte, 1024)
-	_, err := conn.Read(buf)
-	// _, err2 := conn.Write(buf)
-	// fmt.Println(test)
-
-	fmt.Println("LOCAL: ", conn.LocalAddr())
-	fmt.Println("REMOTE: ", conn.RemoteAddr())
-	fmt.Println(buf)
-	if err != nil {
-		fmt.Println(err)
-		return
+	buf := bufio.NewReader(conn)
+	for {
+		message, err := buf.ReadString('\n')
+		if err != nil {
+			fmt.Printf("Client disconnected.\n")
+			break
+		}
+		clients.Messages = append(clients.Messages, message)
+		clients.conn.Write([]byte("[" + string(clients.Pseudo) + "]: "))
+		clients.conn.Write([]byte(message)) // on envoie un message à chaque client
 	}
-
-	// Print the incoming data
-	// fmt.Printf("Received: %s", buf)
-	conn.Write([]byte(buf))
+	// conn.Write([]byte(buf))
 }
 
-func (tab *Identification) User(conn net.Conn) string {
+func (clients *Client) User(conn net.Conn) string {
 	buf := bufio.NewReader(conn)
 	name, _ := buf.ReadString('\n')
-	for _, pseudo := range tab.Name {
-		if pseudo == name[:len(name)-1] {
+	for _, pseudo := range clients.Pseudo {
+		if string(pseudo) == name[:len(name)-1] {
 			conn.Write([]byte("Enter a new name: "))
-			tab.User(conn)
+			clients.User(conn)
 		}
 	}
 	return name
