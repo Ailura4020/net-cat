@@ -1,12 +1,9 @@
 package server
 
 import (
-	"bufio"
 	"fmt"
 	"net"
 	"os"
-	"netcat/server"
-	"sync"
 )
 
 // ?Fonction qui va lancer le server et attribuer des goroutines aux utilisateurs
@@ -23,7 +20,7 @@ func (server *Server) Run() {
 
 	//Création d'une connection au port et à l'Ip donnée
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", IP, port))
-	gestionErreur(err)
+	GestionErreur(err)
 
 	for {
 		//Autorisation d'une nouvelle connection

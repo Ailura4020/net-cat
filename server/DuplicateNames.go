@@ -1,5 +1,10 @@
 package server
 
+import (
+	"bufio"
+	"net"
+)
+
 // ?Fonction qui check si le nom entré est déjà pris ou non
 func (clients *Client) User(conn net.Conn) string {
 	buf := bufio.NewReader(clients.conn)

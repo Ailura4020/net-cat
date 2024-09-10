@@ -1,5 +1,11 @@
 package server
 
+import (
+	"fmt"
+	"strings"
+	"time"
+)
+
 // ?Fonction qui envoie le message à tout les utilisateurs
 func (server *Server) Broadcast(client Client, message string, messagetype int) {
 	if messagetype == 0 {

@@ -1,5 +1,10 @@
 package server
 
+import (
+	"net"
+	"sync"
+)
+
 type Server struct {
 	clients []Client
 	mutex   sync.Mutex

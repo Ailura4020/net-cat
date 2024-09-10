@@ -1,5 +1,10 @@
 package server
 
+import (
+	"bufio"
+	"fmt"
+)
+
 // ?Fonction qui gère l'envoie des messages des utilisateurs
 func (server *Server) HandleConnection(client Client) {
 	// Close the connection when we're done
