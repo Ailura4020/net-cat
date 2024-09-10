@@ -60,7 +60,7 @@ func (server *Server) Run() {
 				conn:   conn,
 				Pseudo: name[:len(name)-1],
 			}
-			fmt.Println(len(server.clients))
+			fmt.Println("Number of clients connected: ", len(server.clients))
 			// fmt.Println(client.Messages)
 
 			//Ajout de la structure client à la structure server
