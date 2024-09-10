@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"sync"
+	"time"
 )
 
 type Server struct {
 	clients []Client
+	mutex   sync.Mutex
 }
 
 type Client struct {
@@ -17,9 +20,12 @@ type Client struct {
 	// Messages []string
 }
 
-type Identification struct {
-	Name []string
-	Id   []interface{}			
+var Log []Historic
+
+type Historic struct {
+	Time    string
+	Pseudo  string
+	Message string
 }
 
 const (
@@ -28,27 +34,26 @@ const (
 )
 
 func main() {
-	server := Server{
-	}
+	server := Server{}
 	server.Run()
 }
 
-//Fonction qui gère les erreurs
+// ?Fonction qui gère les erreurs
 func gestionErreur(err error) {
 	if err != nil {
-		fmt.Println("Error: ", err)
+		fmt.Println("Error encountered: ", err)
 		return
 	}
 }
 
-//Fonction qui va lancer le server et attribuer des goroutines aux utilisateurs
+// ?Fonction qui va lancer le server et attribuer des goroutines aux utilisateurs
 func (server *Server) Run() {
 	//Message au lancement
 	fmt.Println("Lancement du serveur...")
 
 	//On defini le port du server
 	if len(os.Args) != 2 {
-		fmt.Println("Wrong number of arguments, usage: go run . [port number]")
+		fmt.Println("Wrong number of arguments, usage: go run . [Port number]")
 		return
 	}
 	port := os.Args[1]
@@ -56,8 +61,8 @@ func (server *Server) Run() {
 	//Création d'une connection au port et à l'Ip donnée
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", IP, port))
 	gestionErreur(err)
-	// messages := []string{}
-	
+	//TODO messages := []string{}
+
 	for {
 		//Autorisation d'une nouvelle connection
 		conn, err := ln.Accept()
@@ -71,53 +76,57 @@ func (server *Server) Run() {
 		client := Client{
 			conn: conn,
 		}
-		
+
 		//Verification du nombre de clients déjà connectés
 		if len(server.clients) == 10 {
 			client.conn.Write([]byte("Server is full, 10 Users already connected.\n"))
 			client = Client{}
 		} else {
 			//Affichage du logo linux
-			// ascii := AsciiArt()
+			ascii := AsciiArt()
+			client.conn.Write([]byte(ascii))
+
 			//Demande du nom
-			// client.conn.Write([]byte(ascii))
 			client.conn.Write([]byte("Welcome\n"))
 			client.conn.Write([]byte("Enter your name: "))
-			
+
 			//Vérification si le nom choisi est déjà pris
 			name := client.User(conn)
-					
+
 			//Affichage de l'arrivé d'un client aux autres utilisateurs
 			server.Broadcast(client, name[:len(name)-1], 0)
-					
+
 			//Ajout du nom au tableau de noms
 			client = Client{
-				conn: conn,
+				conn:   conn,
 				Pseudo: name[:len(name)-1],
-				// Messages: messages,
+				//TODO Messages: messages,
 			}
 			fmt.Println(len(server.clients))
 			// fmt.Println(client.Messages)
-			
+
 			//Ajout de la structure client à la structure server
+			server.mutex.Lock()
 			server.clients = append(server.clients, client)
-					
+			server.mutex.Unlock()
+
 			// création de notre goroutine quand un client est connecté
 			go server.HandleConnection(client)
 		}
 	}
 }
 
-//Fonction qui gère l'envoie des messages des utilisateurs
+// ?Fonction qui gère l'envoie des messages des utilisateurs
 func (server *Server) HandleConnection(client Client) {
 	// Close the connection when we're done
 	// defer client.conn.Close()
 
-	// for _, name := range server.clients {
-	// 	for _, historic := range client.Messages {
-	// 		name.conn.Write([]byte(historic))
-	// 	}
-	// }
+	//TODO Affichage de l'historique des messages
+	for _, historic := range Log {
+		client.conn.Write([]byte("\033[33m" + "[" + historic.Time + "]" + "[" + historic.Pseudo + "]: " + historic.Message + "\033[0m"))
+	}
+	//TODO
+
 	buf := bufio.NewReader(client.conn)
 	for {
 		message, err := buf.ReadString('\n')
@@ -129,10 +138,9 @@ func (server *Server) HandleConnection(client Client) {
 		//Envoie du message à tout les utilisateurs
 		server.Broadcast(client, message, 2)
 	}
-	// conn.Write([]byte(buf))
 }
 
-//Fonction qui check si le nom entré est déjà pris ou non
+// ?Fonction qui check si le nom entré est déjà pris ou non
 func (clients *Client) User(conn net.Conn) string {
 	buf := bufio.NewReader(clients.conn)
 	name, _ := buf.ReadString('\n')
@@ -148,31 +156,52 @@ func (clients *Client) User(conn net.Conn) string {
 	return name
 }
 
-//Fonction qui envoie le message à tout les utilisateurs
+// fmt.Sprintf("[%s][%s]: %s", time.Now().Format("2006-01-02 15:04:05"), color.Magenta.Sprintf(sender.pseudo), color.Red.Sprintf(message)
+
+// ?Fonction qui envoie le message à tout les utilisateurs
 func (server *Server) Broadcast(client Client, message string, messagetype int) {
-	// fmt.Println("Pseudo: ", client.Pseudo)
 	if messagetype == 0 {
 		for _, name := range server.clients {
-			name.conn.Write([]byte(message + " has joined the chat.\n"))
+			name.conn.Write([]byte("\033[32m" + time.Now().Format("2006-01-02 15:04:05") + "]: " + message + " has joined the chat.\n" + "\033[0m"))
 		}
 	} else if messagetype == 1 {
-			for i, name := range server.clients {
-				name.conn.Write([]byte(message + " has left the chat.\n"))
-				if name == client {
-					server.clients = append(server.clients[:i], server.clients[i+1:]...)
-					fmt.Println(server.clients)
-				}
+		for i, name := range server.clients {
+			name.conn.Write([]byte("\033[31m" + "[" + time.Now().Format("2006-01-02 15:04:05") + "]: " + message + " has left the chat.\n" + "\033[0m"))
+			if name == client {
+				server.clients = append(server.clients[:i], server.clients[i+1:]...)
+				fmt.Println(server.clients)
 			}
-		} else if messagetype == 2 {
-			// client.Messages = append(client.Messages, message)
-			for _, name := range server.clients {
-			name.conn.Write([]byte("[" + string(client.Pseudo) + "]: "))
+		}
+	} else if messagetype == 2 {
+		// if strings.HasPrefix(message, "/rename") {
+		// 	newname := strings.Split(message, " ")
+		// 	for _, name := range server.clients {
+		// 		name.conn.Write([]byte(string(client.Pseudo) + " has changed his name for: " + newname[1]))
+		// 		if name == client {
+		// 			// newname = strings.TrimSpace(newname)
+		// 			client.Pseudo = newname[1][:len(newname[1])-1]
+		// 		}
+		// 	}
+		// } else {
+		historic := Historic{
+			Time:    time.Now().Format("2006-01-02 15:04:05"),
+			Pseudo:  client.Pseudo,
+			Message: message,
+			//TODO Messages: messages,
+		}
+		Log = append(Log, historic)
+		// Log.Time = time.Now().Format("2006-01-02 15:04:05")
+		// Log.Pseudo = client.Pseudo
+		// Log.Message = message
+		for _, name := range server.clients {
+			name.conn.Write([]byte("\033[37m" + "[" + time.Now().Format("2006-01-02 15:04:05") + "]" + "\033[36m" + "[" + string(client.Pseudo) + "]: " + "\033[0m"))
 			name.conn.Write([]byte(message))
-			// fmt.Println(name)
+			// }
 		}
 	}
 }
 
+// ?Fonction qui affiche un pingoin
 func AsciiArt() string {
 	return `
          _nnnn_
@@ -182,9 +211,6 @@ func AsciiArt() string {
        @,----.JM|
       JS^\__/  qKL
      dZP        qKRb
-    dZP          qKKb
-   fZP            SMMb
-   HZM            MMMM
    FqM            MMMM
  __| ".        |\dS"qML
  |    ".       | "' \Zq
