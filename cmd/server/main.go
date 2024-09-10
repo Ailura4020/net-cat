@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+//test
+
 type Server struct {
 	clients []Client
 }
@@ -19,7 +21,7 @@ type Client struct {
 
 type Identification struct {
 	Name []string
-	Id   []interface{}			
+	Id   []interface{}
 }
 
 const (
@@ -28,12 +30,11 @@ const (
 )
 
 func main() {
-	server := Server{
-	}
+	server := Server{}
 	server.Run()
 }
 
-//Fonction qui gère les erreurs
+// Fonction qui gère les erreurs
 func gestionErreur(err error) {
 	if err != nil {
 		fmt.Println("Error: ", err)
@@ -41,7 +42,7 @@ func gestionErreur(err error) {
 	}
 }
 
-//Fonction qui va lancer le server et attribuer des goroutines aux utilisateurs
+// Fonction qui va lancer le server et attribuer des goroutines aux utilisateurs
 func (server *Server) Run() {
 	//Message au lancement
 	fmt.Println("Lancement du serveur...")
@@ -57,7 +58,7 @@ func (server *Server) Run() {
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", IP, port))
 	gestionErreur(err)
 	// messages := []string{}
-	
+
 	for {
 		//Autorisation d'une nouvelle connection
 		conn, err := ln.Accept()
@@ -71,7 +72,7 @@ func (server *Server) Run() {
 		client := Client{
 			conn: conn,
 		}
-		
+
 		//Verification du nombre de clients déjà connectés
 		if len(server.clients) == 10 {
 			client.conn.Write([]byte("Server is full, 10 Users already connected.\n"))
@@ -83,32 +84,32 @@ func (server *Server) Run() {
 			// client.conn.Write([]byte(ascii))
 			client.conn.Write([]byte("Welcome\n"))
 			client.conn.Write([]byte("Enter your name: "))
-			
+
 			//Vérification si le nom choisi est déjà pris
 			name := client.User(conn)
-					
+
 			//Affichage de l'arrivé d'un client aux autres utilisateurs
 			server.Broadcast(client, name[:len(name)-1], 0)
-					
+
 			//Ajout du nom au tableau de noms
 			client = Client{
-				conn: conn,
+				conn:   conn,
 				Pseudo: name[:len(name)-1],
 				// Messages: messages,
 			}
 			fmt.Println(len(server.clients))
 			// fmt.Println(client.Messages)
-			
+
 			//Ajout de la structure client à la structure server
 			server.clients = append(server.clients, client)
-					
+
 			// création de notre goroutine quand un client est connecté
 			go server.HandleConnection(client)
 		}
 	}
 }
 
-//Fonction qui gère l'envoie des messages des utilisateurs
+// Fonction qui gère l'envoie des messages des utilisateurs
 func (server *Server) HandleConnection(client Client) {
 	// Close the connection when we're done
 	// defer client.conn.Close()
@@ -132,7 +133,7 @@ func (server *Server) HandleConnection(client Client) {
 	// conn.Write([]byte(buf))
 }
 
-//Fonction qui check si le nom entré est déjà pris ou non
+// Fonction qui check si le nom entré est déjà pris ou non
 func (clients *Client) User(conn net.Conn) string {
 	buf := bufio.NewReader(clients.conn)
 	name, _ := buf.ReadString('\n')
@@ -148,7 +149,7 @@ func (clients *Client) User(conn net.Conn) string {
 	return name
 }
 
-//Fonction qui envoie le message à tout les utilisateurs
+// Fonction qui envoie le message à tout les utilisateurs
 func (server *Server) Broadcast(client Client, message string, messagetype int) {
 	// fmt.Println("Pseudo: ", client.Pseudo)
 	if messagetype == 0 {
@@ -156,16 +157,16 @@ func (server *Server) Broadcast(client Client, message string, messagetype int) 
 			name.conn.Write([]byte(message + " has joined the chat.\n"))
 		}
 	} else if messagetype == 1 {
-			for i, name := range server.clients {
-				name.conn.Write([]byte(message + " has left the chat.\n"))
-				if name == client {
-					server.clients = append(server.clients[:i], server.clients[i+1:]...)
-					fmt.Println(server.clients)
-				}
+		for i, name := range server.clients {
+			name.conn.Write([]byte(message + " has left the chat.\n"))
+			if name == client {
+				server.clients = append(server.clients[:i], server.clients[i+1:]...)
+				fmt.Println(server.clients)
 			}
-		} else if messagetype == 2 {
-			// client.Messages = append(client.Messages, message)
-			for _, name := range server.clients {
+		}
+	} else if messagetype == 2 {
+		// client.Messages = append(client.Messages, message)
+		for _, name := range server.clients {
 			name.conn.Write([]byte("[" + string(client.Pseudo) + "]: "))
 			name.conn.Write([]byte(message))
 			// fmt.Println(name)
