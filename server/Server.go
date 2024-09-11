@@ -37,8 +37,24 @@ func (server *Server) Run() {
 			ascii := AsciiArt()
 			client.conn.Write([]byte(ascii))
 
-			//Demande du nom
+			connected = ""
+			for _, connect := range server.clients {
+				connected += connect.Pseudo + ", "
+			}
+
+			//Message de bienvenue
 			client.conn.Write([]byte("Welcome\n"))
+
+			//Affichage des clients déjà connectés
+			if len(connected) == 0 {
+				//Si aucun client n'est connecté
+				client.conn.Write([]byte("Server empty\n"))
+			} else {
+				//Sinon on affiche tout les clients
+				client.conn.Write([]byte("Clients connected: " + "\033[34m" + connected[:len(connected)-2] + "\033[0m" + "\n"))
+			}
+
+			//Demande du nom
 			client.conn.Write([]byte("Enter your name: "))
 
 			//Vérification si le nom choisi est déjà pris
@@ -56,7 +72,7 @@ func (server *Server) Run() {
 				conn:   conn,
 				Pseudo: name[:len(name)-1],
 			}
-			
+
 			//Notifie le server quand un client se connecte
 			// fmt.Printf(client.Pseudo, " connected.\n")
 			fmt.Println("Number of clients connected: ", len(server.clients))

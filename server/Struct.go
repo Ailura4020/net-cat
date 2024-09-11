@@ -18,7 +18,10 @@ type Client struct {
 }
 
 var Log []Historic
+
 var Txt []string
+
+var connected string
 
 type Historic struct {
 	Time    string
