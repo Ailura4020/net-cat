@@ -11,9 +11,13 @@ A simple chat server written in Go.
 To run the server, simply execute the following command:
 
 ```sh
+# clone the project
+git clone https://zone01normandie.org/git/clecart/net-cat.git
+# build application
+go build -o TCPChat
 # launch server
-go run main.go [Port number]
-# launch client
+./TCPChat [Port number]
+# in a new terminal window, launch the client
 nc localhost [Port number]
 ```
 Replace `[Port number]` with the desired port number.
