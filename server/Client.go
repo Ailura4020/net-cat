@@ -2,7 +2,6 @@ package server
 
 import (
 	"bufio"
-	"fmt"
 )
 
 // ?Fonction qui gère l'envoie des messages des utilisateurs
@@ -19,11 +18,11 @@ func (server *Server) HandleConnection(client Client) {
 	for {
 		message, err := buf.ReadString('\n')
 		if err != nil {
-			server.Broadcast(client, client.Pseudo, "leave")
-			fmt.Printf("Client disconnected.\n")
+			client = server.Broadcast(client, client.Pseudo, "leave")
+			// fmt.Printf(client.Pseudo, " disconnected.\n")
 			break
 		}
 		//Envoie du message à tout les utilisateurs
-		server.Broadcast(client, message, "message")
+		client = server.Broadcast(client, message, "message")
 	}
 }

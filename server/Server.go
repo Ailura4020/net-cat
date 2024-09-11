@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"net"
-	"os"
 )
 
 // ?Fonction qui va lancer le server et attribuer des goroutines aux utilisateurs
@@ -11,15 +10,8 @@ func (server *Server) Run() {
 	//Message au lancement
 	fmt.Println("Lancement du serveur...")
 
-	//On defini le port du server
-	if len(os.Args) != 2 {
-		fmt.Println("Wrong number of arguments, usage: go run . [Port number]")
-		return
-	}
-	port := os.Args[1]
-
 	//Création d'une connection au port et à l'Ip donnée
-	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", IP, port))
+	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", server.IP, server.PORT))
 	GestionErreur(err)
 
 	for {
@@ -50,26 +42,33 @@ func (server *Server) Run() {
 			client.conn.Write([]byte("Enter your name: "))
 
 			//Vérification si le nom choisi est déjà pris
-			name := client.User(conn)
+			duplicate, name := server.User(conn)
+			//Tant que la variable booleene est false (duplicate), on redemande en boucle un pseudo
+			for !duplicate {
+				duplicate, name = server.User(conn)
+			}
 
 			//Affichage de l'arrivé d'un client aux autres utilisateurs
-			server.Broadcast(client, name[:len(name)-1], "join")
+			client = server.Broadcast(client, name[:len(name)-1], "join")
 
 			//Ajout du nom au tableau de noms
 			client = Client{
 				conn:   conn,
 				Pseudo: name[:len(name)-1],
 			}
+			
+			//Notifie le server quand un client se connecte
+			// fmt.Printf(client.Pseudo, " connected.\n")
 			fmt.Println("Number of clients connected: ", len(server.clients))
-			// fmt.Println(client.Messages)
 
 			//Ajout de la structure client à la structure server
 			server.mutex.Lock()
 			server.clients = append(server.clients, client)
 			server.mutex.Unlock()
 
-			// création de notre goroutine quand un client est connecté
+			//Création de notre goroutine quand un client est connecté
 			go server.HandleConnection(client)
+			//(La goroutine va executer une fonction en parrallèle de notre server)
 		}
 	}
 }
