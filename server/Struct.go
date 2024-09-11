@@ -13,7 +13,6 @@ type Server struct {
 type Client struct {
 	conn   net.Conn
 	Pseudo string
-	// Messages []string
 }
 
 var Log []Historic

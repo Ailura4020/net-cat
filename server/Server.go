@@ -53,7 +53,7 @@ func (server *Server) Run() {
 			name := client.User(conn)
 
 			//Affichage de l'arrivé d'un client aux autres utilisateurs
-			server.Broadcast(client, name[:len(name)-1], 0)
+			server.Broadcast(client, name[:len(name)-1], "join")
 
 			//Ajout du nom au tableau de noms
 			client = Client{

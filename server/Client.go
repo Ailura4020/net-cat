@@ -19,11 +19,11 @@ func (server *Server) HandleConnection(client Client) {
 	for {
 		message, err := buf.ReadString('\n')
 		if err != nil {
-			server.Broadcast(client, client.Pseudo, 1)
+			server.Broadcast(client, client.Pseudo, "leave")
 			fmt.Printf("Client disconnected.\n")
 			break
 		}
 		//Envoie du message à tout les utilisateurs
-		server.Broadcast(client, message, 2)
+		server.Broadcast(client, message, "message")
 	}
 }
