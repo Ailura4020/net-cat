@@ -1,9 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"netcat/server"
 	"os"
-	"fmt"
 )
 
 func main() {
@@ -22,9 +23,15 @@ func main() {
 
 	//On défini le port et l'ip du server
 	server := server.Server{
-		IP: ip,
+		IP:   ip,
 		PORT: port,
 	}
+	//Permet d'effacer l'historique dans log.txt
+	file, err := os.OpenFile("../net-cat/log.txt", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	file.Close()
 
 	//On lance le server
 	server.Run()

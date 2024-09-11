@@ -15,12 +15,13 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 			Pseudo:  message,
 			Message: "has joined the chat.\n",
 		}
-				
+
 		//Lock des autres clients le temps de changer la base de donnée
 		server.mutex.Lock()
 		Log = append(Log, historic)
+		Txt = append(Txt, ("[" + time.Now().Format("2006-01-02 15:04:05") + "] " + message + " has joined the chat.\n"))
 		server.mutex.Unlock()
-			
+
 		for _, name := range server.clients {
 			name.conn.Write([]byte("\033[32m" + time.Now().Format("2006-01-02 15:04:05") + "] " + message + " has joined the chat.\n" + "\033[0m"))
 		}
@@ -35,6 +36,7 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 		//Lock des autres clients le temps de changer la base de donnée
 		server.mutex.Lock()
 		Log = append(Log, historic)
+		Txt = append(Txt, (time.Now().Format("2006-01-02 15:04:05") + "] " + message + " has left the chat.\n"))
 		server.mutex.Unlock()
 
 		for i, name := range server.clients {
@@ -55,6 +57,7 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 		//Lock des autres clients le temps de changer la base de donnée
 		server.mutex.Lock()
 		Log = append(Log, historic)
+		Txt = append(Txt, "["+time.Now().Format("2006-01-02 15:04:05")+"] "+"["+client.Pseudo+"]"+message)
 		server.mutex.Unlock()
 
 		//Filtrer si le message est un rename ou pas
@@ -65,7 +68,7 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 			newname := strings.TrimSpace(message[7:])
 			//On range sur les clients pour checker les pseudo deja pris un à un
 			for i, name := range server.clients {
-				if server.RenameDeplicates(client ,newname) {
+				if server.RenameDeplicates(client, newname) {
 					name.conn.Write([]byte(string(client.Pseudo) + " has changed his/her name for: " + newname + "\n"))
 					//On check si le nouveau nom choisi est déjà pris
 					if name == client {
@@ -74,6 +77,9 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 					}
 				}
 			}
+
+			Txt = append(Txt, "["+time.Now().Format("2006-01-02 15:04:05")+string(client.Pseudo)+"]"+" has changed his/her name for: "+newname+"\n")
+
 			if rename && server.RenameDeplicates(client, newname) {
 				//On modifie la structure donc on lock avec le mutex le temps des changements
 				server.mutex.Lock()
@@ -82,7 +88,7 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 				//On change aussi la structure du client stockée dans la structure server
 				server.clients[index].Pseudo = newname
 				server.mutex.Unlock()
-			} else if !server.RenameDeplicates(client ,newname) {
+			} else if !server.RenameDeplicates(client, newname) {
 				//On affiche un message à l'utilisateur qui utilise /rename si le rename n'est pas possible
 				client.conn.Write([]byte("Name already taken, choose another one.\n"))
 			}
@@ -95,6 +101,8 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 			}
 		}
 	}
+	//Appelle la fonction pour imprimer l'historique en fichier txt
+	LogHistory()
 	//On return la structure client, modifiée ou non
 	return client
 }

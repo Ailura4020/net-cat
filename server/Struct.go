@@ -8,8 +8,8 @@ import (
 type Server struct {
 	clients []Client
 	mutex   sync.Mutex
-	IP 			string
-	PORT 		string
+	IP      string
+	PORT    string
 }
 
 type Client struct {
@@ -18,6 +18,7 @@ type Client struct {
 }
 
 var Log []Historic
+var Txt []string
 
 type Historic struct {
 	Time    string
