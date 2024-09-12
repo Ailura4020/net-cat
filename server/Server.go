@@ -14,6 +14,9 @@ func (server *Server) Run() {
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", server.IP, server.PORT))
 	GestionErreur(err)
 
+	client := Client{}
+	go server.AdminConnection(client)
+
 	for {
 		//Autorisation d'une nouvelle connection
 		conn, err := ln.Accept()

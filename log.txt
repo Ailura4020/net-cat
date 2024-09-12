@@ -1,52 +1,33 @@
-[2024-09-12 11:07:52] Damien has joined the chat.
+[2024-09-12 12:40:10] Damien has joined the chat.
 
-[2024-09-12 11:07:53] [Damien]sdfq
+[2024-09-12 12:40:15] Justine has joined the chat.
 
-[2024-09-12 11:07:56] [Damien]/color green
+[2024-09-12 12:40:22] Thomas has joined the chat.
 
-[2024-09-12 11:07:56Damien has changed his/her color for: green
+[2024-09-12 12:40:29] [Admin]Hello there
+[2024-09-12 12:40:34] [Admin]hfdghfg
+[2024-09-12 12:40:35] [Admin]ghdfgh
+[2024-09-12 12:40:36] [Admin]fghdfg
+[2024-09-12 12:40:44] [Admin]dgfhdfghfgh
+[2024-09-12 12:42:51] [Admin]fgsdfgsdfg
+[2024-09-12 12:42:52] [Admin]dfgsdfg
+[2024-09-12 12:49:58] [Damien]/color blue
 
-[2024-09-12 11:08:03] [[32mDamien[0m]/rename Shrek
+[2024-09-12 12:49:58Damien has changed his/her color for: blue
 
-[2024-09-12 11:08:03[32mDamien[0m] has changed his/her name for: Shrek
+[2024-09-12 12:49:59] [[34mDamien[0m]sqfdf
 
-[2024-09-12 11:08:04] [Shrek]fqsdf
+[2024-09-12 12:50:13] [[34mDamien[0m]Hello there
 
-[2024-09-12 11:08:10] Justine has joined the chat.
+[2024-09-12 12:52:43] [Justine]/color yellow
 
-[2024-09-12 11:08:11] [Justine]fsdf
+[2024-09-12 12:52:43Justine has changed his/her color for: yellow
 
-[2024-09-12 11:08:15] [Justine]/color red
+[2024-09-12 12:52:48] [[33mJustine[0m]Hello
 
-[2024-09-12 11:08:15Justine has changed his/her color for: red
+[2024-09-12 12:52:53] [[33mJustine[0m]/rename Jupiter
 
-[2024-09-12 11:08:16] [[31mJustine[0m]fsdqf
+[2024-09-12 12:52:53Justine] has changed his/her name for: Jupiter
 
-[2024-09-12 11:08:20] [[31mJustine[0m]/rename Jupiter
-
-[2024-09-12 11:08:20[31mJustine[0m] has changed his/her name for: Jupiter
-
-[2024-09-12 11:08:21] [Jupiter]fqsf
-
-[2024-09-12 11:08:26] [Jupiter]/color magenta
-
-[2024-09-12 11:08:26Jupiter has changed his/her color for: magenta
-
-[2024-09-12 11:08:27] [[35mJupiter[0m]sdfqsd
-
-[2024-09-12 11:08:59] Thomas has joined the chat.
-
-[2024-09-12 11:09:03] [Thomas]Hello there
-
-[2024-09-12 11:09:06] [Thomas]/rename pipi
-
-[2024-09-12 11:09:06Thomas] has changed his/her name for: pipi
-
-[2024-09-12 11:09:12] [pipi]/color yellow
-
-[2024-09-12 11:09:12pipi has changed his/her color for: yellow
-
-[2024-09-12 11:09:13] [[33mpipi[0m]qsfdqds
-
-[2024-09-12 11:09:14] [[33mpipi[0m]sdfqsdf
+[2024-09-12 12:53:02] [Jupiter]hello
 

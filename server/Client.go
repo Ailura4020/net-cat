@@ -2,6 +2,7 @@ package server
 
 import (
 	"bufio"
+	"os"
 )
 
 // ?Fonction qui gère l'envoie des messages des utilisateurs
@@ -24,5 +25,18 @@ func (server *Server) HandleConnection(client Client) {
 		}
 		//Envoie du message à tout les utilisateurs
 		client = server.Broadcast(client, message, "message")
+	}
+}
+
+// ?Fonction qui gère l'envoie des messages de l'admin
+func (server *Server) AdminConnection(client Client) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		scanner.Scan()
+		input := scanner.Text()
+		if input == "quit" {
+			break
+		}
+		server.Broadcast(client, input, "admin")
 	}
 }
