@@ -15,6 +15,7 @@ type Server struct {
 type Client struct {
 	conn   net.Conn
 	Pseudo string
+	Color  string
 }
 
 var Log []Historic
