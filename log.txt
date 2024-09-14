@@ -1,33 +1,76 @@
-[2024-09-12 12:40:10] Damien has joined the chat.
+[2024-09-14 10:33:30] [Admin]dfgsdfq
+[2024-09-14 10:33:30] [Admin]fqsdfqsd
+[2024-09-14 10:33:34] Damien has joined the chat.
 
-[2024-09-12 12:40:15] Justine has joined the chat.
+[2024-09-14 10:33:37] [Damien]hello there
 
-[2024-09-12 12:40:22] Thomas has joined the chat.
+[2024-09-14 10:33:40] [Damien]/color blue
 
-[2024-09-12 12:40:29] [Admin]Hello there
-[2024-09-12 12:40:34] [Admin]hfdghfg
-[2024-09-12 12:40:35] [Admin]ghdfgh
-[2024-09-12 12:40:36] [Admin]fghdfg
-[2024-09-12 12:40:44] [Admin]dgfhdfghfgh
-[2024-09-12 12:42:51] [Admin]fgsdfgsdfg
-[2024-09-12 12:42:52] [Admin]dfgsdfg
-[2024-09-12 12:49:58] [Damien]/color blue
+[2024-09-14 10:33:40Damien has changed his/her color for: blue
 
-[2024-09-12 12:49:58Damien has changed his/her color for: blue
+[2024-09-14 10:33:41] [[34mDamien[0m]dfsgsd
 
-[2024-09-12 12:49:59] [[34mDamien[0m]sqfdf
+[2024-09-14 10:33:44] [[34mDamien[0m]/rename Shrek
 
-[2024-09-12 12:50:13] [[34mDamien[0m]Hello there
+[2024-09-14 10:33:44Damien] has changed his/her name for: Shrek
 
-[2024-09-12 12:52:43] [Justine]/color yellow
+[2024-09-14 10:33:45] [[34mShrek[0m]fgdsdg
 
-[2024-09-12 12:52:43Justine has changed his/her color for: yellow
+[2024-09-14 10:33:48] [[34mShrek[0m]/color green
 
-[2024-09-12 12:52:48] [[33mJustine[0m]Hello
+[2024-09-14 10:33:48Shrek has changed his/her color for: green
 
-[2024-09-12 12:52:53] [[33mJustine[0m]/rename Jupiter
+[2024-09-14 10:33:49] [[32mShrek[0m]fdgsdf
 
-[2024-09-12 12:52:53Justine] has changed his/her name for: Jupiter
+[2024-09-14 10:33:52] [[32mShrek[0m]/color magenta
 
-[2024-09-12 12:53:02] [Jupiter]hello
+[2024-09-14 10:33:52Shrek has changed his/her color for: magenta
+
+[2024-09-14 10:33:52] [[35mShrek[0m]gfsdfg
+
+[2024-09-14 10:33:55] [[35mShrek[0m]/rename Damien
+
+[2024-09-14 10:33:55Shrek] has changed his/her name for: Damien
+
+[2024-09-14 10:33:56] [[35mDamien[0m]fdgsdfgsdf
+
+[2024-09-14 10:34:00] Justine has joined the chat.
+
+[2024-09-14 10:34:01] [Justine]fdqsdf
+
+[2024-09-14 10:34:07] [Justine]/color yellow
+
+[2024-09-14 10:34:07Justine has changed his/her color for: yellow
+
+[2024-09-14 10:34:08] [[33mJustine[0m]fsgdf
+
+[2024-09-14 10:34:11] [[33mJustine[0m]/rename Jupiter
+
+[2024-09-14 10:34:11Justine] has changed his/her name for: Jupiter
+
+[2024-09-14 10:34:12] [[33mJupiter[0m]dfdsf
+
+[2024-09-14 10:34:17] [[35mDamien[0m]/rename Justine
+
+[2024-09-14 10:34:17Damien] has changed his/her name for: Justine
+
+[2024-09-14 10:34:17] [[35mJustine[0m]fdgsdf
+
+[2024-09-14 10:34:23] [[35mJustine[0m]/rename Jupiter
+
+[2024-09-14 10:34:23Justine] has changed his/her name for: Jupiter
+
+[2024-09-14 10:34:24] [[35mJustine[0m]sddfs
+
+[2024-09-14 10:34:28] [[35mJustine[0m]/rename Damien
+
+[2024-09-14 10:34:28Justine] has changed his/her name for: Damien
+
+[2024-09-14 10:34:28] [[35mDamien[0m]gfdfs
+
+[2024-09-14 10:34:31] [[35mDamien[0m]/color blue
+
+[2024-09-14 10:34:31Damien has changed his/her color for: blue
+
+[2024-09-14 10:34:31] [[34mDamien[0m]fsdgdfsg$
 

@@ -53,7 +53,7 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 		historic := Historic{
 			Time:    time.Now().Format("2006-01-02 15:04:05"),
 			Pseudo:  "Admin",
-			Message: message,
+			Message: message+"\n",
 		}
 
 		//Lock des autres clients le temps de changer la base de donnée

@@ -26,7 +26,7 @@ func (server *Server) FlagRename(client Client, message string) Client {
 		//On modifie la structure donc on lock avec le mutex le temps des changements
 		server.mutex.Lock()
 		//On change la structure client
-		client.Pseudo = newname
+		client.Pseudo = client.Color + newname + "\033[0m"
 		//On change aussi la structure du client stockée dans la structure server
 		server.clients[index].Pseudo = newname
 		server.mutex.Unlock()
@@ -51,18 +51,25 @@ func (server *Server) FlagColor(client Client, index int, message string) Client
 	switch newname {
 	case "yellow":
 		client.Pseudo = "\033[33m" + server.clients[index].Pseudo + "\033[0m"
+		client.Color = "\033[33m"
 	case "red":
 		client.Pseudo = "\033[31m" + server.clients[index].Pseudo + "\033[0m"
+		client.Color = "\033[31m"
 	case "blue":
 		client.Pseudo = "\033[34m" + server.clients[index].Pseudo + "\033[0m"
+		client.Color = "\033[34m"
 	case "magenta":
 		client.Pseudo = "\033[35m" + server.clients[index].Pseudo + "\033[0m"
+		client.Color = "\033[35m"
 	case "cyan":
 		client.Pseudo = "\033[36m" + server.clients[index].Pseudo + "\033[0m"
+		client.Color = "\033[36m"
 	case "green":
 		client.Pseudo = "\033[32m" + server.clients[index].Pseudo + "\033[0m"
+		client.Color = "\033[32m"
 	case "white":
 		client.Pseudo = "\033[97m" + server.clients[index].Pseudo + "\033[0m"
+		client.Color = "\033[97m"
 	default:
 		//Si le client entre une couleur non valide
 		client.conn.Write([]byte("Invalid color, choose another one\n"))
