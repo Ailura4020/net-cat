@@ -3,10 +3,12 @@ A simple chat server written in Go.
 
 ## Features
 * Handles multiple clients
+
 * Broadcasts messages to all connected clients
 * Logs messages and user actions (join, leave, rename)
 * Supports renaming of users
 * Limits the number of connected clients to 10
+* Supports flags for renaming and changing color
 ## Usage
 To run the server, simply execute the following command:
 
@@ -25,8 +27,9 @@ Replace `[Port number]` with the desired port number.
 ## Code Structure
 The code is organized into several packages:
 
-`server`: contains the main server logic, including the Server and Client structs, as well as functions for handling connections, broadcasting messages, and logging.
-`main`: contains the main function, which creates a new Server instance and starts it.
+* `server`: contains the main server logic, including the Server and Client structs, as well as functions for handling connections, broadcasting messages, and logging.
+
+* `main`: contains the `main` function, which creates a new `Server` instance and starts it.
 ## Functions
 `AsciiArt()`
 Returns a string containing an ASCII art logo.
@@ -62,6 +65,28 @@ The IP address to listen on (localhost).
 
 `PORT`
 The port number to listen on (8081).
+
+# Flags
+The following flags are available:
+
+* `rename`: Renames the user to a new name.
+* `color`: Changes the`color of the user's name.
+# Commands
+The following commands are available:
+
+* `/rename <newname>`: Renames the user to  `<newname>`.
+
+* `/color <color>`: Changes the color of the user's name to `<color>`. 
+
+ #### Available colors are:
+
+* yellow
+* red
+* blue
+* magenta
+* cyan
+* green
+* white
 
  ### MIT License
 
