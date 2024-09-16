@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"strings"
 	"time"
 )
@@ -39,14 +38,21 @@ func (server *Server) Broadcast(client Client, message string, messagetype strin
 		Txt = append(Txt, (time.Now().Format("2006-01-02 15:04:05") + "] " + message + " has left the chat.\n"))
 		server.mutex.Unlock()
 
+		disconnect := false
+		index := 0
 		for i, name := range server.clients {
-			name.conn.Write([]byte("\033[31m" + "[" + time.Now().Format("2006-01-02 15:04:05") + "] " + message + " has left the chat.\n" + "\033[0m"))
 			if name == client {
-				server.clients = append(server.clients[:i], server.clients[i+1:]...)
-				fmt.Println(server.clients)
+				disconnect = true
+				index = i
+			} else {
+				name.conn.Write([]byte("\033[31m" + "[" + time.Now().Format("2006-01-02 15:04:05") + "] " + message + " has left the chat.\n" + "\033[0m"))
 			}
 		}
-
+		if disconnect {
+			server.mutex.Lock()
+			server.clients = append(server.clients[:index], server.clients[index+1:]...)
+			server.mutex.Unlock()
+		}
 		//Check si le message est envoyé par l'admin
 	} else if messagetype == "admin" {
 		//Enregistrement des informations du message dans le tableau de logs

@@ -21,8 +21,8 @@ func (server *Server) FlagRename(client Client, message string) Client {
 			}
 		}
 	}
-	Txt = append(Txt, "["+time.Now().Format("2006-01-02 15:04:05")+string(server.clients[index].Pseudo)+"]"+" has changed his/her name for: "+newname+"\n")
 	if rename && server.RenameDeplicates(client, newname) {
+		Txt = append(Txt, "["+time.Now().Format("2006-01-02 15:04:05")+string(server.clients[index].Pseudo)+"]"+" has changed his/her name for: "+newname+"\n")
 		//On modifie la structure donc on lock avec le mutex le temps des changements
 		server.mutex.Lock()
 		//On change la structure client

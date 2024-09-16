@@ -75,15 +75,15 @@ func (server *Server) Run() {
 				conn:   conn,
 				Pseudo: name[:len(name)-1],
 			}
-
-			//Notifie le server quand un client se connecte
-			// fmt.Printf(client.Pseudo, " connected.\n")
-			fmt.Println("Number of clients connected: ", len(server.clients))
-
+			
 			//Ajout de la structure client à la structure server
 			server.mutex.Lock()
 			server.clients = append(server.clients, client)
 			server.mutex.Unlock()
+
+			//Notifie le server quand un client se connecte
+			// fmt.Printf(client.Pseudo, " connected.\n")
+			fmt.Println("Number of clients connected: ", len(server.clients))
 
 			//Création de notre goroutine quand un client est connecté
 			go server.HandleConnection(client)
